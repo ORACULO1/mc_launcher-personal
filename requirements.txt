@@ -1,0 +1,2 @@
+minecraft-launcher-lib>=8.0
+customtkinter>=5.2
