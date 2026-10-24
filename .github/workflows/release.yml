@@ -1,0 +1,41 @@
+name: Publicar versión
+
+# Al subir una etiqueta (por ejemplo v1.1.4) se compila el instalador y se publica la release con
+# latest.json: con eso los launchers instalados se actualizan solos al abrirse.
+on:
+  push:
+    tags: ["v*"]
+
+jobs:
+  release:
+    runs-on: windows-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: swatinem/rust-cache@v2
+        with:
+          workspaces: src-tauri
+      - name: Compilar el motor de Python
+        shell: cmd
+        run: scripts\build-backend.bat
+      - run: npm install --no-audit --no-fund
+      - name: Preparar la interfaz (ofuscada)
+        run: node scripts\build-frontend.mjs
+      - uses: tauri-apps/tauri-action@v0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
+          TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ""
+        with:
+          tagName: ${{ github.ref_name }}
+          releaseName: "Chechenitza Studio ${{ github.ref_name }}"
+          releaseDraft: false
+          prerelease: false

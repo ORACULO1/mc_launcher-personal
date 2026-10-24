@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Chechenitza Studio</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="app">
+
+  <div class="titlebar">
+    <div class="titlebar-brand">
+      <img src="assets/logo.png" class="titlebar-icon" alt="Chechenitza Studio">
+      <span>Chechenitza Studio</span>
+    </div>
+    <div class="titlebar-controls">
+      <button class="titlebar-btn" id="btnWinMinimize" title="Minimizar">&#9472;</button>
+      <button class="titlebar-btn" id="btnWinMaximize" title="Maximizar">&#9633;</button>
+      <button class="titlebar-btn titlebar-btn-close" id="btnWinClose" title="Cerrar">&#10005;</button>
+    </div>
+  </div>
+
+  <div class="topnav">
+    <div class="topnav-left">
+      <button class="nav-item topnav-item active" data-view="games">Instancias</button>
+      <button class="nav-item topnav-item" data-view="library">Biblioteca</button>
+      <button class="nav-item topnav-item" data-view="vestidor">Vestidor</button>
+    </div>
+    <div class="topnav-right">
+      <div class="online-indicator" id="onlineIndicator" style="display:none;">
+        <span class="online-dot"></span>
+        <span id="onlineCount">—</span>
+      </div>
+      <button class="nav-item topnav-icon-btn" data-view="settings" title="Ajustes">&#9881;</button>
+      <button class="topnav-profile-btn" id="topnavProfileBtn" data-view="account" title="Perfil">
+        <canvas class="topnav-profile-face" id="topnavProfileFace" width="32" height="32"></canvas>
+        <span class="topnav-profile-fallback" id="topnavProfileInitial">?</span>
+      </button>
+    </div>
+  </div>
+
+  <nav class="sidebar legacy-hidden">
+    <div class="brand">
+      <img class="brand-mark" src="assets/logo.png" alt="Chechenitza Studio">
+      <span>CHECHENITZA STUDIO</span>
+    </div>
+    <div class="brand-version" id="brandVersion"></div>
+
+    <button class="nav-item" data-view="home">
+      <span class="nav-icon">▶</span> Jugar
+    </button>
+    <button class="nav-item" data-view="profiles">
+      <span class="nav-icon">▦</span> Perfiles
+    </button>
+    <button class="nav-item" data-view="mods">
+      <span class="nav-icon">✦</span> Mods
+    </button>
+    <button class="nav-item" data-view="modpacks">
+      <span class="nav-icon">▣</span> Modpacks
+    </button>
+    <button class="nav-item" data-view="shaderpacks">
+      <span class="nav-icon">✺</span> Shaderpacks
+    </button>
+    <button class="nav-item" data-view="resourcepacks">
+      <span class="nav-icon">▤</span> Resourcepacks
+    </button>
+    <button class="nav-item" data-view="skin">
+      <span class="nav-icon">◈</span> Skin
+    </button>
+
+    <div class="sidebar-account" id="sidebarAccount">
+      <div class="avatar-mini" id="avatarMini"></div>
+      <div class="account-mini-text">
+        <div class="account-mini-name" id="accountMiniName">Sin sesión</div>
+        <div class="account-mini-sub" id="accountMiniSub">Inicia sesión</div>
+      </div>
+    </div>
+  </nav>
+
+  <main class="content content-full">
+
+    <section class="view active" id="view-games">
+      <header class="view-header">
+        <h1>Instancias</h1>
+      </header>
+
+      <div class="games-grid" id="gamesGrid">
+
+      </div>
+    </section>
+
+    <section class="view" id="view-library">
+      <header class="view-header">
+        <h1>Biblioteca</h1>
+      </header>
+
+      <div class="library-list" id="libraryList">
+
+      </div>
+    </section>
+
+    <section class="view" id="view-home">
+      <header class="view-header">
+        <h1>Jugar</h1>
+        <p class="subtitle">Elige un perfil y lánzate a la aventura.</p>
+      </header>
+
+      <div class="home-grid">
+        <div class="profile-carousel" id="profileCarousel">
+
+        </div>
+
+        <div class="launch-panel">
+          <div class="selected-profile-name" id="selectedProfileName">Ningún perfil seleccionado</div>
+          <div class="selected-profile-meta" id="selectedProfileMeta">Crea un perfil para empezar</div>
+
+          <button class="btn-play" id="btnPlay" disabled>
+            <span id="btnPlayLabel">JUGAR</span>
+          </button>
+
+          <div class="progress-wrap" id="progressWrap" style="display:none;">
+            <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+            <div class="progress-text" id="progressText">Instalando…</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="view" id="view-profiles">
+      <header class="view-header">
+        <h1>Perfiles</h1>
+        <p class="subtitle">Cada perfil tiene su propia carpeta de mods y mundos.</p>
+      </header>
+
+      <button class="btn-secondary" id="btnNewProfile">+ Nuevo perfil</button>
+
+      <div class="profiles-list" id="profilesList"></div>
+    </section>
+
+    <section class="view" id="view-mods">
+      <header class="view-header">
+        <h1>Mods</h1>
+        <p class="subtitle">Activa, desactiva, o busca e instala mods nuevos desde Modrinth.</p>
+      </header>
+
+      <div class="mods-toolbar">
+        <div id="modsProfileSelect" class="dropdown"></div>
+        <button class="btn-secondary" id="btnOpenModsFolder">Abrir carpeta</button>
+      </div>
+
+      <div class="mods-subtabs">
+        <button class="mods-subtab active" data-subtab="installed">Instalados</button>
+        <button class="mods-subtab" data-subtab="browse">Buscar mods</button>
+      </div>
+
+      <div class="mods-subview active" id="modsSubview-installed">
+        <div class="mods-list" id="modsList"></div>
+      </div>
+
+      <div class="mods-subview" id="modsSubview-browse">
+        <div class="mod-search-bar">
+          <input type="text" id="modSearchInput" class="input-fancy" placeholder="Buscar mods en Modrinth… (ej. sodium, jei, optifine)">
+          <button class="btn-primary" id="btnModSearch">Buscar</button>
+        </div>
+        <div class="mod-search-hint" id="modSearchHint"></div>
+        <div class="mod-search-results" id="modSearchResults"></div>
+      </div>
+    </section>
+
+    <section class="view" id="view-modpacks">
+      <header class="view-header">
+        <h1>Modpacks</h1>
+        <p class="subtitle">Instala un modpack de Modrinth y se creará un perfil nuevo con su nombre, ya configurado.</p>
+      </header>
+
+      <div class="mods-subtabs">
+        <button class="mods-subtab active" data-pack-tab="modpacks" data-subtab="installed">Instalados</button>
+        <button class="mods-subtab" data-pack-tab="modpacks" data-subtab="browse">Buscar modpacks</button>
+      </div>
+
+      <div class="mods-subview active" id="modpacksSubview-installed">
+        <div class="mods-list" id="modpacksInstalledList"></div>
+      </div>
+
+      <div class="mods-subview" id="modpacksSubview-browse">
+        <div class="mod-search-bar">
+          <input type="text" id="modpackSearchInput" class="input-fancy" placeholder="Buscar modpacks en Modrinth… (ej. All the Mods, Vault Hunters)">
+          <button class="btn-primary" id="btnModpackSearch">Buscar</button>
+        </div>
+        <div class="mod-search-hint" id="modpackSearchHint"></div>
+        <div class="mod-search-results" id="modpackSearchResults"></div>
+      </div>
+    </section>
+
+    <section class="view" id="view-shaderpacks">
+      <header class="view-header">
+        <h1>Shaderpacks</h1>
+        <p class="subtitle">Gestiona los shaders de cada perfil. Actívalos desde el menú de vídeo de Minecraft.</p>
+      </header>
+
+      <div class="packs-toolbar">
+        <div id="shaderpacksProfileSelect" class="dropdown"></div>
+        <button class="btn-secondary" id="btnOpenShaderpacksFolder">Abrir carpeta</button>
+      </div>
+      <div class="mods-subtabs">
+        <button class="mods-subtab active" data-pack-tab="shaderpacks" data-subtab="installed">Instalados</button>
+        <button class="mods-subtab" data-pack-tab="shaderpacks" data-subtab="browse">Buscar shaderpacks</button>
+      </div>
+      <div class="packs-subview active" id="shaderpacksSubview-installed"><div class="packs-list" id="shaderpacksList"></div></div>
+      <div class="packs-subview" id="shaderpacksSubview-browse">
+        <div class="mod-search-bar">
+          <input type="text" id="shaderpacksSearchInput" class="input-fancy" placeholder="Buscar shaderpacks en Modrinth… (ej. Complementary, BSL)">
+          <button class="btn-primary" id="btnShaderpacksSearch">Buscar</button>
+        </div>
+        <div class="mod-search-hint" id="shaderpacksSearchHint"></div><div class="mod-search-results" id="shaderpacksSearchResults"></div>
+      </div>
+    </section>
+
+    <section class="view" id="view-resourcepacks">
+      <header class="view-header">
+        <h1>Resourcepacks</h1>
+        <p class="subtitle">Gestiona los paquetes de recursos de cada perfil. Actívalos dentro de Minecraft.</p>
+      </header>
+
+      <div class="packs-toolbar">
+        <div id="resourcepacksProfileSelect" class="dropdown"></div>
+        <button class="btn-secondary" id="btnOpenResourcepacksFolder">Abrir carpeta</button>
+      </div>
+      <div class="mods-subtabs">
+        <button class="mods-subtab active" data-pack-tab="resourcepacks" data-subtab="installed">Instalados</button>
+        <button class="mods-subtab" data-pack-tab="resourcepacks" data-subtab="browse">Buscar resourcepacks</button>
+      </div>
+      <div class="packs-subview active" id="resourcepacksSubview-installed"><div class="packs-list" id="resourcepacksList"></div></div>
+      <div class="packs-subview" id="resourcepacksSubview-browse">
+        <div class="mod-search-bar">
+          <input type="text" id="resourcepacksSearchInput" class="input-fancy" placeholder="Buscar resourcepacks en Modrinth… (ej. Faithful, Fresh Animations)">
+          <button class="btn-primary" id="btnResourcepacksSearch">Buscar</button>
+        </div>
+        <div class="mod-search-hint" id="resourcepacksSearchHint"></div><div class="mod-search-results" id="resourcepacksSearchResults"></div>
+      </div>
+    </section>
+
+    <section class="view" id="view-skin">
+      <header class="view-header">
+        <h1>Tu Skin</h1>
+        <p class="subtitle">Vista previa 3D de tu personaje.</p>
+      </header>
+
+      <div class="skin-viewer-wrap">
+        <canvas id="skinCanvas"></canvas>
+        <div class="skin-hint">Arrastra para girar</div>
+      </div>
+    </section>
+
+    <section class="view" id="view-vestidor">
+      <header class="view-header">
+        <h1>Vestidor</h1>
+      </header>
+
+      <div id="vestidorOfflineNotice" class="vestidor-notice" style="display:none;">
+        Necesitas iniciar sesión con una cuenta de Microsoft con Minecraft para cambiar tu skin o tu capa.
+      </div>
+
+      <div class="vestidor-layout" id="vestidorEditor">
+        <div class="skin-viewer-wrap">
+          <canvas id="vestidorCanvas"></canvas>
+          <div class="skin-hint" id="vestidorHint">Arrastra para girar</div>
+        </div>
+
+        <div class="vestidor-panel">
+          <div class="vestidor-block">
+            <h3>Cambiar aspecto</h3>
+            <button class="btn-primary vestidor-file-btn" id="btnPickSkin">Seleccionar archivo</button>
+          </div>
+
+          <div class="vestidor-block">
+            <h3>Tamaño de brazo</h3>
+            <div class="vestidor-variant-toggle" id="vestidorVariantToggle">
+              <button class="vestidor-variant-btn active" data-variant="classic">Wide</button>
+              <button class="vestidor-variant-btn" data-variant="slim">Slim</button>
+            </div>
+          </div>
+
+          <div class="vestidor-block">
+            <h3>Capas</h3>
+            <div class="vestidor-capes" id="vestidorCapes"></div>
+          </div>
+
+          <div class="vestidor-actions">
+            <button class="btn-secondary" id="btnVestidorCancel">Cancelar</button>
+            <button class="btn-primary" id="btnVestidorConfirm" disabled>Confirmar</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="view" id="view-settings">
+      <header class="view-header">
+        <h1>Ajustes</h1>
+      </header>
+
+      <div class="settings-card">
+        <div class="settings-block">
+          <div class="settings-block-head">
+            <span class="settings-block-title">Memoria</span>
+            <span class="settings-value" id="settingsRamLabel">4 GB</span>
+          </div>
+          <p class="settings-hint">Memoria RAM máxima que puede usar Minecraft (límite: 32 GB). Se aplica la próxima vez que abras el juego.</p>
+          <input type="range" id="settingsRamSlider" class="slider-fancy" min="1024" max="32768" step="512" value="4096">
+        </div>
+
+        <div class="settings-block">
+          <div class="settings-block-head">
+            <span class="settings-block-title">Límite de descarga</span>
+            <span class="settings-value" id="settingsDownloadLabel">Sin límite</span>
+          </div>
+          <p class="settings-hint">Velocidad máxima al descargar o actualizar instancias, en MB/s.</p>
+          <input type="range" id="settingsDownloadSlider" class="slider-fancy" min="0" max="50" step="1" value="0">
+        </div>
+      </div>
+    </section>
+
+    <section class="view" id="view-account">
+      <header class="view-header">
+        <h1>Cuenta</h1>
+      </header>
+
+      <div class="account-card">
+        <div class="account-card-row" id="loggedOutRow">
+          <button class="btn-primary" id="btnLoginMicrosoft">Entrar con Microsoft</button>
+        </div>
+        <div class="account-card-row" id="loggedInRow" style="display:none;">
+          <div class="avatar-mini" id="settingsAvatar"></div>
+          <div class="account-mini-text">
+            <div class="account-mini-name" id="settingsAccountName"></div>
+            <div class="account-mini-sub" id="settingsAccountSub"></div>
+          </div>
+          <button class="btn-secondary" id="btnLogout">Log Out</button>
+        </div>
+        <div class="account-status" id="accountStatusText"></div>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+
+
+<div class="modal-backdrop" id="modVersionsModalBackdrop">
+  <div class="modal mod-versions-modal">
+    <h2 id="modVersionsModalTitle">Elegir versión</h2>
+    <div class="mod-versions-hint" id="modVersionsHint"></div>
+    <div class="mod-versions-list" id="modVersionsList"></div>
+    <div class="modal-actions">
+      <button class="btn-secondary" id="btnCloseModVersions">Cerrar</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-backdrop" id="modalBackdrop">
+  <div class="modal">
+    <h2 id="profileModalTitle">Nuevo perfil</h2>
+    <input type="text" id="newProfileName" class="input-fancy" placeholder="Nombre del perfil (ej. Survival)">
+
+    <label class="field-label">Versión</label>
+    <div id="newProfileVersion" class="dropdown"></div>
+
+    <label class="field-label">Mod loader</label>
+    <div id="newProfileLoader" class="dropdown"></div>
+
+    <label class="field-label">RAM: <span id="newProfileRamLabel">2 GB</span></label>
+    <input type="range" id="newProfileRam" min="1024" max="32768" step="512" value="2048" class="slider-fancy">
+
+    <label class="field-label">Color</label>
+    <div class="color-swatches" id="colorSwatches"></div>
+
+    <div class="modal-actions">
+      <button class="btn-secondary" id="btnCancelProfile">Cancelar</button>
+      <button class="btn-primary" id="btnCreateProfile">Crear perfil</button>
+    </div>
+  </div>
+</div>
+
+<div class="info-screen" id="infoScreen" style="display:none;">
+  <div class="info-screen-bg" id="infoScreenBg"></div>
+  <div class="info-screen-shade"></div>
+  <div class="info-screen-scroll">
+    <div class="info-screen-inner">
+      <button class="info-screen-back" id="btnInfoBack">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+        Volver
+      </button>
+      <div class="info-screen-head">
+        <div class="info-screen-icon" id="infoScreenIcon"></div>
+        <h1 id="infoScreenTitle">Información</h1>
+      </div>
+      <div class="info-screen-spacer"></div>
+      <div class="info-screen-grid" id="infoScreenGrid"></div>
+      <div class="info-screen-content" id="infoScreenDesc"></div>
+      <div class="info-screen-before" id="infoScreenBefore" style="display:none;">
+        <div class="info-screen-before-title">
+          <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="4" width="14" height="17" rx="2"/><path d="M9 4V3h6v1M9 10h.01M9 14h.01M9 18h.01M12.5 10H16M12.5 14H16M12.5 18H16"/></svg>
+          <span>ANTES DE JUGAR</span>
+        </div>
+        <ul id="infoScreenBeforeList"></ul>
+      </div>
+      <button class="info-screen-news" id="btnInfoNews" style="display:none;">
+      <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/></svg>
+      Ver novedades
+    </button>
+    </div>
+  </div>
+</div>
+
+<div class="image-viewer" id="imageViewer" style="display:none;">
+  <button class="info-screen-back" id="btnImageBack">
+    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+    Volver
+  </button>
+  <div class="image-viewer-stage"><img id="imageViewerImg" alt=""></div>
+</div>
+
+<div class="modal-backdrop" id="confirmModalBackdrop">
+  <div class="modal">
+    <h2 id="confirmModalTitle">Desinstalar</h2>
+    <p class="confirm-text" id="confirmModalText"></p>
+    <div class="modal-actions">
+      <button class="btn-secondary" id="btnConfirmCancel">Cancelar</button>
+      <button class="btn-danger" id="btnConfirmOk">Desinstalar</button>
+    </div>
+  </div>
+</div>
+
+<div class="install-screen" id="installScreen" style="display:none;">
+  <div class="install-screen-bg" id="installScreenBg"></div>
+  <div class="install-screen-shade"></div>
+  <button class="btn-secondary install-screen-back" id="btnInstallBack">&#8592; Volver</button>
+  <div class="install-screen-panel">
+    <div class="install-screen-title" id="installScreenTitle">Instalando…</div>
+    <div class="install-bar">
+      <div class="install-bar-head">
+        <span id="installTopLabel">Instalando…</span>
+        <span id="installTopPct">0%</span>
+      </div>
+      <div class="progress-track install-track"><div class="progress-fill" id="installTopFill"></div></div>
+    </div>
+    <div class="install-bar" id="installBottomBar">
+      <div class="install-bar-head">
+        <span id="installBottomLabel">Descargando librerías…</span>
+        <span id="installBottomPct">0%</span>
+      </div>
+      <div class="progress-track install-track"><div class="progress-fill" id="installBottomFill"></div></div>
+    </div>
+  </div>
+</div>
+
+<div class="access-gate is-neutral" id="accessGate" style="display:flex;">
+  <div class="access-gate-inner">
+    <h1 id="accessGateTitle">Cargando…</h1>
+    <p id="accessGateText"></p>
+    <p id="accessGateSession"></p>
+    <div class="access-gate-actions">
+      <button class="btn-primary" id="btnGateLogin" style="display:none;">Entrar con Microsoft</button>
+      <button class="btn-secondary" id="btnAccessRetry" style="display:none;">Reintentar</button>
+      <button class="btn-danger" id="btnAccessLogout" style="display:none;">Cerrar sesión</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast-container" id="toastContainer"></div>
+
+<script src="tauri-bridge.js"></script>
+<script src="assets/skinview3d.bundle.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
