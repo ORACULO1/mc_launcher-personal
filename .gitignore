@@ -1,8 +1,0 @@
-node_modules/
-build/
-dist/
-src-tauri/target/
-src-tauri/gen/
-src-tauri/binaries/*.exe
-# ¡Nunca subas la clave privada!
-keys/chechenitza.key
