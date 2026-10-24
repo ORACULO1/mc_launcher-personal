@@ -1,7 +1,0 @@
-minecraft-launcher-lib>=8.0
-requests>=2.31
-pypresence>=4.3
-cryptography>=42.0
-nuitka>=2.4
-ordered-set
-zstandard
