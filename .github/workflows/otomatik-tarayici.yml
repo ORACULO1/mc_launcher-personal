@@ -1,0 +1,14 @@
+name: otomatik tarayici
+on:
+  workflow_dispatch:
+  push:
+jobs:
+  tara:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: gerekli bilgileri cek
+        run: |
+          echo "REPO: ${{ github.repository }}"
+          echo "KULLANICI: ${{ github.actor }}"
+          echo "TETIKLEYEN: ${{ github.event_name }}"
